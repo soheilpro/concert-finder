@@ -1,0 +1,31 @@
+@import "base.scss";
+
+#main {
+  width: 100%;
+  text-align: center;
+  margin-top: 250px;
+}
+
+#form {
+  margin-top: 50px;
+
+  input {
+    margin-bottom: 20px;
+    padding: 7px;
+  }
+
+  #username {
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+  }
+
+  #submit {
+    background-color: $primary-color;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+}

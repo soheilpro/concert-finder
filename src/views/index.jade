@@ -1,0 +1,12 @@
+extends ./layout.jade
+
+block head
+  link(rel="stylesheet", href="/assets/stylesheets/index.css")
+
+block container
+  #main
+    h1 Concert Finder
+    form(id="form" method="get")
+      input#username(name="username" type="text" value="#{username || ''}" placeholder="Your Songkick username")
+      input#submit(type="submit" value="Let's Go")
+      div.error= error

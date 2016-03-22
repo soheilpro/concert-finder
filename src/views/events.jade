@@ -1,0 +1,105 @@
+extends ./layout.jade
+
+block head
+  link(rel="stylesheet", href="http://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.1.2/css/ion.rangeSlider.min.css")
+  link(rel="stylesheet", href="http://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.1.2/css/ion.rangeSlider.skinFlat.min.css")
+  link(rel="stylesheet", href="http://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css")
+  link(rel="stylesheet", href="/assets/stylesheets/events.css")
+
+block container
+  #header
+    #calendar-option
+      select#calendar-option-input
+        option(value="gregorian") Gregorian
+        option(value="jalali") Jalali
+    h1
+      a(href="/") Concert Finder
+    div(style="float: clear")
+  #filters
+    #date-filter
+      input#date-filter-input(type="text")
+    #location-filter
+      select#location-filter-input(multiple="multiple")
+        each country in countries
+          optgroup(label=country)
+            each location in _.filter(locations, function(location) { return location.city.slice(-country.length) === country; })
+              option= location.city
+    #artist-filter
+      select#artist-filter-input(multiple="multiple")
+        each artist in artists
+          option(value=artist.id)= artist.displayName
+    #type-filter
+      select#type-filter-input(multiple="multiple")
+        option(value="Concert") Concerts
+        option(value="Festival") Festivals
+    div(style="float: clear")
+  #main
+    #left
+      #map-container
+        #map
+    #right
+      #list-options
+          input#visible-events-only-input(name="visible-events-only-input" type="checkbox")
+          label(for="visible-events-only-input") Events within the visible map area only
+      #list
+  #footer
+    #copyright
+      div Copyright 2016 <a href="http://soheilrashidi.com">Soheil Rashidi</a>.
+      div View source at <a href="https://github.com/soheilpro/concert-finder">GitHub</a>.
+    a#songkick(href="http://songkick.com")
+      img(src="/assets/images/songkick.png" height="30")
+
+
+  script#list-item-template(type="text/x-handlebars-template").
+    <div class="event" id="event-{{id}}" onclick='selectEvent(getEvent({{id}}), { selectOnMap: true } )'>
+      <div class="days">
+        {{daysRemaining start.date}}
+      </div>
+      {{#if series}}
+      <div class="series">
+        {{series.displayName}}
+      </div>
+      {{/if}}
+      <div class="artists">
+        {{#each performance}}
+          <span class="artist user-tracked-artist">{{artist.displayName}}</span>{{#unless @last}}, {{/unless}}
+        {{/each}}
+        {{#if performanceByOtherArtists}}
+          +
+          {{#each performanceByOtherArtists}}
+            <span class="artist">{{artist.displayName}}</span>{{#unless @last}}, {{/unless}}
+          {{/each}}
+        {{/if}}
+      </div>
+      {{#if isFestival}}
+        <div class="festival">
+          {{type}}
+        </div>
+      {{/if}}
+      <div class="location">
+        {{location.city}}
+      </div>
+      <div class="date">
+        {{formatDate start.date}}
+        {{#if end}}
+           &ndash; {{formatDate end.date}}
+        {{/if}}
+      </div>
+      <div class="songkick-link">
+        <a href="{{uri}}">View on Singkick</a>
+      </div>
+    </div>
+
+  script.
+    var _artists = !{ JSON.stringify(artists) };
+    var _events = !{ JSON.stringify(events) };
+
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js")
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js")
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.1.2/js/ion.rangeSlider.min.js")
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js")
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js")
+  script(src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js")
+  script(src="http://maps.googleapis.com/maps/api/js?key=#{ google.maps.apikey }&callback=initMap", async="", defer="")
+  script(src="/assets/scripts/jalali.js")
+  script(src="/assets/scripts/events.js")
